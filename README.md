@@ -1,83 +1,32 @@
-# Agenttisen ohjelmoinnin kontti
+# Street Excavation Coordination
 
-Agenttista ohjelmointia varten rakennettu kehitysympäristö, joka hyödyntää VS Code Dev Containersia. Tekoälyn pääsy rajoittuu kontin sisälle, ja työskentely-ympäristö on selkeästi eriytetty muusta järjestelmästä.
+Dig once: a service that lets a city open a street once for all the underground work it needs, and then leave it alone.
 
-## Kansiorakenne
+Today the same street is often dug up several times within a few years, because water, district heating, electricity, telecom and other network operators plan their work separately. This project coordinates those plans so that overlapping works are combined into one joint excavation, every affected party and resident is notified, and the restored street is protected by a moratorium afterwards.
 
-```
-/
-├── .devcontainer/               # Kehitysympäristön konfiguraatio
-│   ├── Dockerfile               # Dev container -image
-│   └── devcontainer.json        # VS Code Dev Container -asetukset
-├── project/                     # Oma sovelluksesi
-└── README.md
-```
+The pilot is the Töölö district of Helsinki, Finland. The service extends Helsinki's existing street-works system [Haitaton](https://haitaton.hel.fi) and uses national sources such as Traficom's Verkkotietopiste and Johtotieto.
 
-## Käyttöönotto
+## Status
 
-### Vaatimukset
+Product definition. The full requirements are in **[PRD.md](PRD.md)**:
 
-- [Docker Desktop](https://www.docker.com)
-- [VS Code](https://code.visualstudio.com)
-- VS Code -laajennus: [Dev Containers](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers)
+- Helsinki context and existing systems
+- Goals, non-goals and success metrics
+- Stakeholders, dig-once lifecycle and key user flows
+- Functional requirements (FR-1 to FR-24), data model and integrations
+- Policy rules, moratoriums and the public operator cooperation scorecard
+- Non-functional requirements, phasing, risks and open questions
 
-### Käynnistys
+## Development environment
 
-1. Kloonaa repositorio:
-   ```bash
-   git clone --depth 1 https://github.com/sitrafund/agenttisen-ohjelmoinnin-kontti.git projektin-nimi
-   ```
+The repository includes a VS Code Dev Container (`.devcontainer/`) with Claude Code and Mistral Vibe preinstalled, based on Sitra's [agenttisen-ohjelmoinnin-kontti](https://github.com/sitrafund/agenttisen-ohjelmoinnin-kontti) template.
 
-2. Siirry kansioon:
-   ```bash
-   cd projektin-nimi
-   ```
-
-3. Avaa kansio VS Codessa:
-   ```bash
-   code .
-   ```
-
-4. VS Code tunnistaa `.devcontainer/`-kansion ja ehdottaa: **"Reopen in Container"** — klikkaa sitä.
-
-5. Odota, että kontti rakentuu. Tämän jälkeen olet kehitysympäristössä.
-
-### Claude Coden käyttö
-
-Avaa VS Coden terminaali ja kirjoita:
-```bash
-claude
-```
-
-### Mistral Viben käyttö
+Requirements: [Docker Desktop](https://www.docker.com), [VS Code](https://code.visualstudio.com) and the [Dev Containers](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers) extension.
 
 ```bash
-vibe
+git clone https://github.com/Jussi-Hermunen/street-excavation-coordination.git
+cd street-excavation-coordination
+code .
 ```
 
-### Tunnistautuminen
-
-Ensimmäisellä kerralla sinun tulee tunnistautua. Tunnistautuminen ei välttämättä toimi VS Coden terminaalissa. Tällöin avaa Macin oma terminaali, siirry kontin sisään ja kirjoita `claude` tai `vibe`:
-
-```bash
-docker exec -it <kontin-nimi> bash
-claude
-```
-
-Tunnistautumisen jälkeen sessio säilyy ja voit jatkaa VS Coden terminaalissa.
-
-## Dev Container -ominaisuudet
-
-Kontissa on valmiiksi asennettuna:
-- Claude Code
-- Mistral Vibe
-
-## Kokeile
-
-Pyydä Claudea tai Mistral Vibeä luomaan peli:
-
-```
-Luo ristinolla-peli project-kansioon ja porttiin 3000
-```
-
-Onnea ohjelmointiin 🤖
+VS Code offers **Reopen in Container**; accept it and wait for the container to build. Then run `claude` or `vibe` in the terminal. If sign-in fails in the VS Code terminal, run `docker exec -it <container-name> bash` from your own terminal and sign in there once.
