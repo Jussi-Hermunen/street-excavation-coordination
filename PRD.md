@@ -4,7 +4,7 @@ Sep 26, 2026 · @Jussi Hermunen
 
 ## Helsinki context
 
-The pilot city is Helsinki, and Helsinki already runs its own street-works system, Haitaton. This product should therefore extend Haitaton with dig-once coordination, not compete with it.
+The pilot is the Töölö district of Helsinki, and Helsinki already runs its own street-works system, Haitaton. This product should therefore extend Haitaton with dig-once coordination, not compete with it.
 
 | System | Owner | What it does today | Role for this product |
 | --- | --- | --- | --- |
@@ -234,7 +234,7 @@ The system handles critical-infrastructure data, so security and access control 
 
 ## Phasing and MVP
 
-The MVP proves the loop in one pilot district with a handful of asset owners before adding permit integration and public features.
+The MVP proves the loop in the Töölö pilot district with a handful of asset owners before adding permit integration and public features.
 
 | Phase | Scope | Exit criteria |
 | --- | --- | --- |
@@ -269,12 +269,11 @@ The biggest risk is adoption: if asset owners do not enter plans early, the syst
 
 **Open questions**
 
-- [x] Pilot city: Helsinki, Finland (district still to choose).
+- [x] Pilot: Töölö district, Helsinki, Finland.
 - [x] Existing city system: Haitaton handles projects, johtoselvitys and kaivuilmoitus; we extend it.
 - [x] National cable and pipe location: Johtotieto / Johtotietopankki; planned works: Traficom Verkkotietopiste.
 - [x] Operator: a vendor builds and operates, then transfers operation to the city.
 - [x] Residents can subscribe to notifications (in MVP, FR-17).
-- [ ] Which Helsinki district is the pilot?
 - [ ] Does Haitaton's public API expose hanke and kaivuilmoitus data, and will the Haitaton team host new modules?
 - [ ] Does Helsinki already have a protection period for newly resurfaced streets? Ask Urban Environment (Kaupunkiympäristö); none found in public sources.
 - [ ] Can Verkkotietopiste's interface be used by a city service, and on what terms?
