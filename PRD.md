@@ -2,6 +2,24 @@
 
 Sep 26, 2026 · @Jussi Hermunen
 
+## Helsinki context
+
+The pilot city is Helsinki, and Helsinki already runs its own street-works system, Haitaton. This product should therefore extend Haitaton with dig-once coordination, not compete with it.
+
+| System | Owner | What it does today | Role for this product |
+| --- | --- | --- | --- |
+| [Haitaton](https://haitaton.hel.fi) | City of Helsinki, Urban Environment | Projects (hanke) on a map, disruption index (haittaindeksi), utility location requests (johtoselvitys) and excavation notifications (kaivuilmoitus); kaivuilmoitus mandatory in Haitaton since 1 May 2025 ([customer guide](https://www.hel.fi/static/hkr/luvat/haitaton/haitaton-asiakasohje.pdf)) | Primary integration and likely host: coordination rounds, joint projects, moratoriums and resident subscriptions built as Haitaton modules or a service beside it |
+| [Haitaton source code](https://github.com/City-of-Helsinki/haitaton-backend) | City of Helsinki | Open source under MIT; Kotlin, Spring Boot, PostgreSQL/PostGIS, Azure Blob Storage; [UI repo](https://github.com/City-of-Helsinki/haitaton-ui) | Sets the tech stack and licence model a vendor should follow so the city can take over operation |
+| [Verkkotietopiste](https://www.traficom.fi/fi/viestinta/viestintaverkot/yhteisrakentaminen/verkkotietopiste) | Traficom (national) | Planned network construction and existing networks for telecom, electricity, district heating/cooling, gas, water and transport; has an electronic interface | Import other operators' planned works to detect overlaps early; export Helsinki plans back |
+| [Johtotieto / Johtotietopankki](https://johtotietopankki.fi/tietoa-meista/) | Johtotieto Oy, state-owned, part of Erillisverkot group | National cable and pipe location service; hundreds of thousands of inquiries a year | Identify which asset owners have networks in a segment, so they are invited to the coordination round |
+| Helsinki johtotietopalvelu | City of Helsinki (johtotietopalvelu@hel.fi) | City's own utility information service, referenced in the Haitaton guide | Same use as Johtotieto for city-owned networks |
+
+The legal basis for coordinating underground work already exists. The Joint Construction Act ([Yhteisrakentamislaki 276/2016](https://traficom.fi/fi/ajankohtaista/yhteisrakentaminen-jaa-usein-vain-haaveeksi-yhteisrakentamislain-noudattaminen)) requires network operators to publish planned works in Verkkotietopiste in advance, but Traficom reported in October 2024 that too few operators do so; its first enforcement decision came in September 2024. The EU [Gigabit Infrastructure Act](https://digital-strategy.ec.europa.eu/en/policies/gigabit-infrastructure-act) (Regulation 2024/1309) has applied in full since 12 May 2026 and strengthens coordination of civil works.
+
+Implication: the gap is not a missing permit system or a missing plans registry, but the step between them. Nothing today turns an overlap into a joint project, protects a restored street, or tells residents what is coming.
+
+**Operating model.** A vendor builds and operates the service first, then hands it over to the city. That requires open source code owned by the city, the Haitaton stack, infrastructure as code on the city's cloud, and full documentation and runbooks as contract deliverables.
+
 ## Problem
 
 The same city street is often dug up several times within a few years, because each party plans its underground work alone. A water utility renews a pipe, the street is resurfaced, and months later the telecom operator or district heating company opens it again.
@@ -32,10 +50,10 @@ The product succeeds when a street is opened once for all the work it needs, and
 
 **Non-goals (for now)**
 
-- Replacing the city's existing excavation permit system – we integrate with it.
+- Replacing Haitaton or its excavation notification (kaivuilmoitus) process – we extend and integrate with it.
 - Detailed engineering design, cable routing or construction project management tools.
 - Managing emergency repairs in real time – they are recorded and exempted, not planned.
-- Resident-facing journey planning; we publish open data others can use.
+- Resident-facing journey planning; we publish open data others can use (resident notifications for their own street are in scope).
 
 **Success metrics**
 
@@ -61,6 +79,7 @@ The city owns the process; utilities and contractors do most of the data entry; 
 | Traffic management | City traffic planning, public transport authority, emergency services | See upcoming closures early, approve one combined traffic arrangement |
 | Residents and businesses | People living and working on the street | Know when and why the street will be closed, and for how long |
 | City leadership | Council, department heads | Reports on disruption, cost savings and compliance |
+| Vendor (build and operate phase) | Software supplier selected by the city | Clear requirements, access to Haitaton and city cloud, a defined handover to the city's own operation |
 
 ## Core concept: dig once
 
@@ -101,24 +120,26 @@ Must-haves cover the full dig-once loop for planned works; should- and could-hav
 | FR-5 | Map and timeline views of all plans, moratoriums and active sites, with filters by owner, status and time | Must |
 | FR-6 | Automatic conflict detection: same or adjacent segment within a configurable time window, or inside a moratorium | Must |
 | FR-7 | Coordination round: invite all asset owners in the segment plus owners of overlapping plans; response deadline; reminders | Must |
-| FR-8 | Notifications by email and in-app; subscription to areas or segments | Must |
+| FR-8 | Notifications by email and in-app for parties; subscription to areas or segments | Must |
 | FR-9 | Joint project: members, lead party, shared window, work sequence per party, single restoration task | Must |
 | FR-10 | Moratorium registry: set automatically on restoration completion; length by street class | Must |
 | FR-11 | Exception workflow for works inside a moratorium, with justification, approval and fee flag | Must |
 | FR-12 | Emergency work logging (after the fact) that does not reset or break moratorium rules | Must |
 | FR-13 | Audit trail of all decisions, responses and changes | Must |
-| FR-14 | Integration with the existing excavation permit system: permit cannot be granted without a cleared coordination check | Should |
+| FR-14 | Integration with Haitaton: a kaivuilmoitus cannot be approved without a cleared coordination check; hanke data flows both ways | Should |
 | FR-15 | Cost-sharing calculator for joint projects (by trench length, width, number of parties) | Should |
 | FR-16 | Combined traffic arrangement plan attached to a joint project, shared with traffic management | Should |
-| FR-17 | Public map and open data API of upcoming and active works | Should |
+| FR-17 | Resident and business subscriptions: anyone can follow an address, street or area and get email/push notices when works are planned, confirmed, start and end (no login beyond email verification) | Must |
 | FR-18 | Reports: excavations per segment, avoided re-digs, closure days, compliance | Should |
-| FR-19 | Asset network layers (existing pipes/cables) shown on the map to find who must be invited | Could |
+| FR-19 | Look up asset owners in a segment via Johtotieto and Helsinki johtotietopalvelu, to find who must be invited | Could |
 | FR-20 | Suggestions: "your 2029 plan could join this 2027 project" based on flexibility windows | Could |
 | FR-21 | Photo and as-built documentation upload at completion | Could |
+| FR-22 | Public map and open data API of upcoming and active works | Should |
+| FR-23 | Import planned network works in Helsinki from Traficom Verkkotietopiste and flag overlaps; push joint-project opportunities back | Should |
 
 ## Key user flows
 
-Four flows carry the product: submitting a plan, coordinating an overlap, executing the joint work, and handling a moratorium exception.
+Five flows carry the product: submitting a plan, coordinating an overlap, executing the joint work, handling a moratorium exception, and keeping residents informed.
 
 **1. Submit a plan**
 
@@ -145,6 +166,13 @@ Four flows carry the product: submitting a plan, coordinating an overlap, execut
 2. Coordinator approves or rejects; approval sets conditions (fee, restoration width, timing).
 3. Emergency repairs skip approval but must be logged within a set time (e.g. 3 working days).
 
+**5. Resident subscribes to their street**
+
+1. Resident enters an address or draws an area on the public map and confirms their email (push via the city app later).
+2. They get a notice when a work is planned in the area, when a joint project is confirmed with its window, one week before start, and at completion.
+3. Each notice says who is digging, why, for how long, and when the street is protected by a moratorium afterwards.
+4. One-click unsubscribe; no other personal data stored.
+
 ## Data model and integrations
 
 The model centres on street segments; everything else is a plan, a project or a rule attached to them.
@@ -165,11 +193,12 @@ The model centres on street segments; everything else is a plan, a project or a 
 **Integrations**
 
 - **City GIS** – street network and segment geometry (WFS / GeoJSON).
-- **Excavation permit system** – two-way: coordination status feeds the permit decision; granted permits and completion dates flow back.
-- **Utility asset data** – optional network layers to identify who must be invited.
+- **Haitaton** – two-way via its API: projects (hanke) and kaivuilmoitus data flow in; coordination status feeds the kaivuilmoitus decision; completion dates flow back to start moratoriums.
+- **Cable and pipe location services** – Johtotieto and Helsinki johtotietopalvelu to identify which asset owners have networks in a segment and must be invited.
 - **Traffic management systems** – publish combined closures.
 - **Identity** – city SSO for staff; email-based accounts or organisational SSO for external parties.
 - **Open data** – public read-only API and map of upcoming and active works.
+- **Traficom Verkkotietopiste** – import planned network works in Helsinki through its electronic interface; supports operators' duties under the Joint Construction Act.
 
 ## Policy and rules
 
@@ -200,7 +229,8 @@ The system handles critical-infrastructure data, so security and access control 
 - **Availability** – 99.5 % during office hours; daily backups; audit data kept for the full moratorium period plus 5 years.
 - **Performance** – map with all plans for the city loads in under 3 s; conflict check on submission under 5 s.
 - **Usability** – an external planner can submit a plan without training in under 10 minutes.
-- **Hosting** – EU hosting; containerised deployment so other cities can run their own instance.
+- **Hosting** – EU hosting on the city's cloud tenancy from day one, even while the vendor operates it; containerised deployment so other cities can run their own instance.
+- **Transferability** – vendor builds and operates, then hands over to the city: source code open (MIT, as Haitaton) and owned by the city; Haitaton-compatible stack (Kotlin/Spring Boot, PostgreSQL/PostGIS); infrastructure as code; CI/CD in the city's GitHub organisation; runbooks, architecture docs and a supervised handover period as contract deliverables; no proprietary components the city cannot license on its own.
 
 ## Phasing and MVP
 
@@ -209,9 +239,9 @@ The MVP proves the loop in one pilot district with a handful of asset owners bef
 | Phase | Scope | Exit criteria |
 | --- | --- | --- |
 | 0 – Discovery (6–8 weeks) | Interviews with coordinator, 4–6 asset owners, traffic planning; map current permit process; collect 3 years of excavation history for baseline | Baseline re-dig rate measured; pilot area and partners agreed |
-| 1 – MVP (3–4 months) | FR-1–FR-10, FR-13: segments, plan submission, map/timeline, conflict detection, coordination rounds, notifications, joint projects, moratorium registry | Pilot partners enter their next 3-year plans; first coordination rounds run |
-| 2 – Enforcement (3 months) | FR-11, FR-12, FR-14, FR-15: exceptions, emergency logging, permit system integration, cost sharing | Permits in pilot area require a cleared coordination check |
-| 3 – Scale and open (ongoing) | FR-16–FR-21: traffic plans, public map and API, reports, asset layers, smart suggestions; city-wide rollout | All major asset owners onboard; first annual impact report |
+| 1 – MVP (3–4 months) | FR-1–FR-10, FR-13, FR-17: segments, plan submission, map/timeline, conflict detection, coordination rounds, notifications, joint projects, moratorium registry, resident subscriptions | Pilot partners enter their next 3-year plans; first coordination rounds run |
+| 2 – Enforcement (3 months) | FR-11, FR-12, FR-14, FR-15, FR-23: exceptions, emergency logging, Haitaton kaivuilmoitus integration, cost sharing, Verkkotietopiste import | Kaivuilmoitus decisions in pilot area require a cleared coordination check |
+| 3 – Scale and open (ongoing) | FR-16, FR-18–FR-22: traffic plans, reports, asset owner lookup, smart suggestions, public map and API; city-wide rollout; handover to city operation | All major asset owners onboard; first annual impact report; city team runs the service without the vendor |
 
 ## Risks, assumptions and open questions
 
@@ -227,18 +257,34 @@ The biggest risk is adoption: if asset owners do not enter plans early, the syst
 | Cost-sharing disputes block joint projects | Default formula agreed up front in city policy |
 | Legal basis for moratorium fees is unclear | Legal review in Discovery; start with soft enforcement in pilot |
 | Duplication with existing national or commercial tools | Review existing systems in Discovery; integrate rather than rebuild |
+| Overlap or friction with the Haitaton team and roadmap | Involve the Haitaton product owner in Discovery; build as Haitaton modules or a service using its API; agree on who owns which feature |
+| Vendor lock-in blocks handover to the city | Open source from the first commit, city-owned repos and cloud, handover rehearsal before contract end |
+| Operators still do not publish plans in Verkkotietopiste | Accept plans directly in the product too; share compliance data with Traficom |
 
 **Assumptions**
 
-- The city can mandate participation through permit conditions.
+- Helsinki can make a cleared coordination check a condition of kaivuilmoitus approval.
 - Asset owners have multi-year investment plans in some digital form.
 - The city GIS provides a usable street network for segmentation.
 
 **Open questions**
 
-- [ ] Which city and which district is the pilot?
-- [ ] Is there an existing permit system we must integrate with, and does it have an API?
-- [ ] Are there existing national systems for cable/pipe location or work coordination we should reuse?
-- [ ] Who owns and operates the product: the city, a shared service for several cities, or a vendor?
-- [ ] What moratorium lengths and exception fees does the city already have in its bylaws?
-- [ ] Should residents be able to subscribe to notifications for their own street in the MVP?
+- [x] Pilot city: Helsinki, Finland (district still to choose).
+- [x] Existing city system: Haitaton handles projects, johtoselvitys and kaivuilmoitus; we extend it.
+- [x] National cable and pipe location: Johtotieto / Johtotietopankki; planned works: Traficom Verkkotietopiste.
+- [x] Operator: a vendor builds and operates, then transfers operation to the city.
+- [x] Residents can subscribe to notifications (in MVP, FR-17).
+- [ ] Which Helsinki district is the pilot?
+- [ ] Does Haitaton's public API expose hanke and kaivuilmoitus data, and will the Haitaton team host new modules?
+- [ ] Does Helsinki already have a protection period for newly resurfaced streets? Ask Urban Environment (Kaupunkiympäristö); none found in public sources.
+- [ ] Can Verkkotietopiste's interface be used by a city service, and on what terms?
+- [ ] Procurement route and contract length for the vendor phase.
+
+## Sources
+
+- [Haitaton customer guide](https://www.hel.fi/static/hkr/luvat/haitaton/haitaton-asiakasohje.pdf), City of Helsinki
+- [haitaton-backend](https://github.com/City-of-Helsinki/haitaton-backend) and [haitaton-ui](https://github.com/City-of-Helsinki/haitaton-ui), City of Helsinki on GitHub
+- [Verkkotietopiste](https://www.traficom.fi/fi/viestinta/viestintaverkot/yhteisrakentaminen/verkkotietopiste), Traficom
+- [Yhteisrakentaminen jää usein vain haaveeksi](https://traficom.fi/fi/ajankohtaista/yhteisrakentaminen-jaa-usein-vain-haaveeksi-yhteisrakentamislain-noudattaminen), Traficom, 21 Oct 2024
+- [Johtotietopankki – Tietoa meistä](https://johtotietopankki.fi/tietoa-meista/), Johtotieto Oy
+- [Gigabit Infrastructure Act](https://digital-strategy.ec.europa.eu/en/policies/gigabit-infrastructure-act), European Commission
