@@ -136,6 +136,7 @@ Must-haves cover the full dig-once loop for planned works; should- and could-hav
 | FR-21 | Photo and as-built documentation upload at completion | Could |
 | FR-22 | Public map and open data API of upcoming and active works | Should |
 | FR-23 | Import planned network works in Helsinki from Traficom Verkkotietopiste and flag overlaps; push joint-project opportunities back | Should |
+| FR-24 | Operator cooperation scorecard: indicators computed from system records and Traficom decisions, draft review by operators, quarterly public list and open data feed | Should |
 
 ## Key user flows
 
@@ -217,6 +218,32 @@ The software only works if the city backs it with rules; every threshold below m
 
 These values are starting points for the pilot; the legal basis for fees and moratorium enforcement must be confirmed with the city's legal team.
 
+## Operator cooperation scorecard (public name-and-shame list)
+
+The city publishes, per network operator, how well it cooperates on joint construction in Helsinki, so that non-cooperation has a visible reputational cost. Every entry must rest on verifiable facts, because a public list of named companies exposes the city to defamation and liability claims.
+
+**What is measured (Helsinki only, rolling 24 months)**
+
+| Indicator | Source | Counts against the operator when |
+| --- | --- | --- |
+| Plans published ahead of time | This system, Verkkotietopiste import | A kaivuilmoitus is filed for work that was never published as a plan, or published under 6 months before start |
+| Responses to coordination rounds | This system | No answer by the deadline |
+| Joint-project participation | This system | Declined a joint project, then dug the same segment within the moratorium |
+| Moratorium breaches | This system, Haitaton | Dug a protected segment without an approved exception |
+| Official findings under the Joint Construction Act | Traficom's published decisions | Traficom has issued a decision finding a breach |
+
+**Rules for publication**
+
+- Only facts recorded in the system or published by an authority; no opinions, no estimates.
+- The city is not the supervisory authority for the Joint Construction Act. The list reports cooperation in Helsinki; only Traficom's own decisions may be called breaches of the Act.
+- Operators see their draft score 30 days before each quarterly publication and can correct errors or add a short statement, published next to their entry.
+- Emergency repairs and approved exceptions never count against an operator.
+- Every published number links to the underlying records (project, date, segment), without exposing critical-infrastructure details.
+- The list shows good performers as well as poor ones, ranked by overall score.
+- Legal review by the City of Helsinki legal services before the first publication.
+
+**Where it appears:** a public page and open data feed, a quarterly report to the Urban Environment Committee, and a notification to Traficom of repeated non-cooperation so the regulator can act.
+
 ## Non-functional requirements
 
 The system handles critical-infrastructure data, so security and access control come first, then ease of use for occasional external users.
@@ -240,7 +267,7 @@ The MVP proves the loop in the Töölö pilot district with a handful of asset o
 | --- | --- | --- |
 | 0 – Discovery (6–8 weeks) | Interviews with coordinator, 4–6 asset owners, traffic planning; map current permit process; collect 3 years of excavation history for baseline | Baseline re-dig rate measured; pilot area and partners agreed |
 | 1 – MVP (3–4 months) | FR-1–FR-10, FR-13, FR-17: segments, plan submission, map/timeline, conflict detection, coordination rounds, notifications, joint projects, moratorium registry, resident subscriptions | Pilot partners enter their next 3-year plans; first coordination rounds run |
-| 2 – Enforcement (3 months) | FR-11, FR-12, FR-14, FR-15, FR-23: exceptions, emergency logging, Haitaton kaivuilmoitus integration, cost sharing, Verkkotietopiste import | Kaivuilmoitus decisions in pilot area require a cleared coordination check |
+| 2 – Enforcement (3 months) | FR-11, FR-12, FR-14, FR-15, FR-23, FR-24: exceptions, emergency logging, Haitaton kaivuilmoitus integration, cost sharing, Verkkotietopiste import, operator scorecard (internal first; public after legal review and 12 months of data) | Kaivuilmoitus decisions in pilot area require a cleared coordination check |
 | 3 – Scale and open (ongoing) | FR-16, FR-18–FR-22: traffic plans, reports, asset owner lookup, smart suggestions, public map and API; city-wide rollout; handover to city operation | All major asset owners onboard; first annual impact report; city team runs the service without the vendor |
 
 ## Risks, assumptions and open questions
@@ -260,6 +287,7 @@ The biggest risk is adoption: if asset owners do not enter plans early, the syst
 | Overlap or friction with the Haitaton team and roadmap | Involve the Haitaton product owner in Discovery; build as Haitaton modules or a service using its API; agree on who owns which feature |
 | Vendor lock-in blocks handover to the city | Open source from the first commit, city-owned repos and cloud, handover rehearsal before contract end |
 | Operators still do not publish plans in Verkkotietopiste | Accept plans directly in the product too; share compliance data with Traficom |
+| Public scorecard triggers defamation claims or operator backlash, reducing cooperation | Facts only, 30-day review and right of reply, legal review, internal-only run before going public, show good performers too |
 
 **Assumptions**
 
@@ -278,6 +306,7 @@ The biggest risk is adoption: if asset owners do not enter plans early, the syst
 - [ ] Does Helsinki already have a protection period for newly resurfaced streets? Ask Urban Environment (Kaupunkiympäristö); none found in public sources.
 - [ ] Can Verkkotietopiste's interface be used by a city service, and on what terms?
 - [ ] Procurement route and contract length for the vendor phase.
+- [ ] Does Helsinki have the legal mandate to publish a named operator scorecard, and who signs off on each publication?
 
 ## Sources
 
